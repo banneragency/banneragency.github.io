@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="BannerAgency: Advertising Banner Design with Multimodal LLM Agents">
+  <meta name="keywords" content="BannerAgency, Banner, Design">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BannerAgency: Advertising Banner Design with Multimodal LLM Agents</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/icon.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<!-- Additional CSS for the carousel -->
+<!-- <style>
+  /* Make sure images are centered and properly sized in carousel items */
+  .carousel .item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .carousel .item img {
+    max-height: 400px;
+    width: auto;
+    object-fit: contain;
+  }
+  
+  /* Make sure navigation controls are visible */
+  .carousel-nav-left, .carousel-nav-right {
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* The original may have had custom styling, so adding similar styling here */
+  .results-carousel {
+    overflow: hidden;
+  }
+</style> -->
+<!-- Additional CSS for the carousel -->
+<!-- Additional CSS for the carousel -->
+<style>
+  /* Make sure images are centered and properly sized in carousel items */
+  .carousel .item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+  
+  .carousel .item img {
+    max-height: 600px;
+    width: auto;
+    object-fit: contain;
+  }
+  
+  /* Make sure navigation controls are visible */
+  .carousel-nav-left, .carousel-nav-right {
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* The original may have had custom styling, so adding similar styling here */
+  .results-carousel {
+    overflow: hidden;
+  }
+  
+  /* Banner Section Styles */
+  .banner-section {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  
+  .banner-section h3 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .banner-carousel {
+    background-color: white;
+    border-radius: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .banner-slide {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .banner-slide-skyscraper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 60px;
+    justify-content: center;
+    padding: 10px;
+  }
+  
+  .banner-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .banner-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 10;
+  }
+  
+  .banner-item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* Caption/Prompt styling */
+  .banner-caption {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow-y: auto;
+    font-size: 14px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .banner-item:hover .banner-caption {
+    opacity: 1;
+  }
+  
+  /* Specific sizes for standard ad dimensions */
+  .banner-item.medium-rectangle {
+    width: 300px;
+    height: 250px;
+  }
+  
+  .banner-item.leaderboard {
+    width: 728px;
+    height: 90px;
+  }
+  
+  .banner-item.skyscraper {
+    width: 160px;
+    height: 600px;
+  }
+
+  
+  /* Adjust caption font sizes for different banner types */
+  .banner-item.leaderboard .banner-caption {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  /* Banner section headings and descriptions */
+  .section-heading {
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .section-description {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .banner-item.leaderboard {
+      width: 100%;
+      max-width: 728px;
+      height: auto;
+      aspect-ratio: 8/1;
+    }
+    
+    .banner-item.medium-rectangle {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      aspect-ratio: 6/5;
+    }
+    
+    .banner-item.skyscraper {
+      width: 100%;
+      max-width: 160px;
+      height: auto;
+      aspect-ratio: 1/3.75;
+    }
+  }
+</style>
+
+<!-- JavaScript to initialize the carousels -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the results carousel
+    bulmaCarousel.attach('#results-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 1,
+      infinite: true,
+      autoplay: false,
+      navigation: true  // Show navigation arrows
+    });
+    
+    // Initialize the banner carousels for each size
+    bulmaCarousel.attach('#medium-rectangle-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 1,
+      infinite: true,
+      autoplay: false,
+      navigation: true
+    });
+    
+    bulmaCarousel.attach('#leaderboard-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 1,
+      infinite: true,
+      autoplay: false,
+      navigation: true
+    });
+    
+    bulmaCarousel.attach('#skyscraper-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 1,
+      infinite: true,
+      autoplay: false,
+      navigation: true
+    });
+    
+    // Fix any display issues after initialization
+    const carousels = document.querySelectorAll('.carousel');
+    carousels.forEach(function(carousel) {
+      carousel.style.display = 'block';
+      
+      // Force a redraw/refresh
+      setTimeout(function() {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    });
+  });
+</script>
+<!-- JavaScript to initialize the carousel -->
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize the carousel
+    bulmaCarousel.attach('#results-carousel', {
+      slidesToScroll: 1,
+      slidesToShow: 1,
+      infinite: true,
+      autoplay: false,
+      navigation: true  // Show navigation arrows
+    });
+    
+    // Fix any display issues after initialization
+    const carousel = document.querySelector('#results-carousel');
+    if (carousel) {
+      // Make sure carousel is visible
+      carousel.style.display = 'block';
+      
+      // Force a redraw/refresh
+      setTimeout(function() {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    }
+  });
+</script> -->
+<!-- JavaScript to initialize the carousel -->
+
+
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+<!-- author section -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">BannerAgency: Advertising Banner Design with Multimodal LLM Agents</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com.au/citations?user=jPj4ViQAAAAJ&hl=en">Heng Wang</a>,</span>
+            <span class="author-block">
+              Yotaro Shimose,</span>
+            <span class="author-block">
+              Shingo Takamatsu,
+            </span>
+            
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Sony Group Corporation</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="./static/banneragency_paper.pdf"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2503.11060"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              
+              <!-- Dataset Link. -->
+              <span class="link-block">
+                <a href="https://todo"
+                   class="external-link button is-normal is-rounded is-dark disabled">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>BannerRequest400 (coming soon)</span>
+                  </a>
+            </div>
+            <!-- Code Link. -->
+            <span class="link-block">
+              <a href="https://github.com/sony/BannerAgency"
+                 class="external-link button is-normal is-rounded is-dark" disabled>
+                <span class="icon">
+                    <i class="fab fa-github"></i>
+                </span>
+                <span>Code (coming soon)</span>
+                </a>
+            </span>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <!-- Medium Rectangle (300x250) Section -->
+    <div class="banner-section">
+      <h3 class="section-heading has-text-centered">Generated Medium Rectangle Banners (300x250)</h3>
+      <p class="section-description has-text-centered">Commonly used in content sidebars and embedded in articles</p>
+      
+      <div id="medium-rectangle-carousel" class="carousel banner-carousel">
+        <!-- First Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/46_4.png" alt="pure pasture">
+              <div class="banner-caption">
+                "Design a banner ad image of size 300x250 for an organic meat farm, highlighting the freshness and quality of the organic farm-fresh meats offered. The advertisement should be eye-catching and appeal to a diverse audience. The logo path is 046_purepastures_logo_cropped.png. The target audience is Environmentally conscious individuals. The primary purpose is Emphasize the sustainable and eco-friendly practices of the organic meat farm."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/87_1.png" alt="mixbite">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 for a fast food restaurant promoting a Create-Your-Combo offer with a surprise discount of 30% off at checkout. The logo path is 087_mixbite_logo_cropped.png. The target audience is Young adults aged 18-25. The primary purpose is Encourage them to visit the restaurant and try the Create-Your-Combo offer."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/65_1.png" alt="pearl bay">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 to promote the offer of premium oysters from a fish market. The ad emphasizes the experience of premium dining at a discounted price. Encourage the viewers to order now. The logo path is 065_pearlbay_logo_cropped.png. The target audience is Food enthusiasts. The primary purpose is Encourage them to order premium oysters for a fine dining experience at home."
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Second Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/valentines_sweet_treats_banner.png" alt="dolce amore">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 of a Valentine's Day advertisement for a sweet treats shop. Promote the heart-shaped cookies and offer a complimentary dessert. Encourage customers to indulge in sweetness and shop now. The logo path is 078_dolceamore_logo_cropped.png. The target audience is Couples. The primary purpose is Encourage them to purchase heart-shaped cookies for their partner."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/automation_tech_banner.png" alt="automate">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 for a robotics technology company that emphasizes the benefits of automation and how it can make life easier. The logo path is 007_automate_logo_cropped.png. The target audience is Homeowners. The primary purpose is Promote home automation products that can simplify daily tasks and enhance convenience."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/spa_wellness_banner.png" alt="spa">
+              <div class="banner-caption">
+                "Design a banner ad image of size 300x250 showcasing a spa salon and their offers for massage and skin care services. The image features skincare products and soap to highlight the organic and clean aspect of the salon's services. The logo path is 014_pureserenityspa_logo_cropped.png. The target audience is Health-conscious individuals. The primary purpose is Highlight the organic and clean aspects of the salon's products."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Thrid Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/5_3.png" alt="harvest fresh farm">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 that showcases the hard work of farmers and the potential of agriculture. The image features a farmer harvesting vegetables in a field. The logo path is 005_harvest_logo_cropped.png. The target audience is Consumers. The primary purpose is Promote purchasing locally grown produce."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/42_1.png" alt="butter and beyong">
+              <div class="banner-caption">
+                "Design a banner ad image of size 300x250 for a special sale on organic ghee butter. The ad should highlight the 20% off discount. The logo path is 042_butter&beyond_logo_cropped.png. The target audience is Health-conscious individuals. The primary purpose is Encourage them to purchase organic ghee butter at a discounted price."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/39_2.png" alt="safe shift">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 to promote a moving and storage company, emphasizing their specialty and offering a 50% discount. Encourage customers to visit www.safeshift.com for more information. The logo path is 039_safeshift_logo_cropped.png. The target audience is College students. The primary purpose is Inform them about the storage solutions for their belongings during summer breaks."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fourth Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/butcher_shop_banner.png" alt="prime and proper">
+              <div class="banner-caption">
+                "Design a banner ad image of size 300x250 for a family butcher shop highlighting a 50% discount on premium handcrafted sausages. Our sausages are made with traditional recipes and fresh ingredients. The logo path is 045_prime&proper_logo_cropped.png. The target audience is Food enthusiasts. The primary purpose is Attract them to try the premium handcrafted sausages made with traditional recipes and fresh ingredients.."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/modern_armchair_living_room_banner.png" alt="great space">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 for modern upholstered armchairs that are cozy and comfortable. The ad is for GreatSpace furniture, and emphasizes the effectiveness of their furniture in creating an elegant and comfortable living room. The logo path is 021_greatspace_logo_cropped.png. The target audience is Interior designers. The primary purpose is Inspire them to recommend GreatSpace furniture to their clients.."
+              </div>
+            </div>
+            
+            <div class="banner-item medium-rectangle">
+              <img src="./static/teasers/mrec/spring_fashion_banner.png" alt="and thread">
+              <div class="banner-caption">
+                "Create a banner ad image of size 300x250 for a spring clothing sale. Encourage customers to shop now and offer a discount of up to 30% off. The logo path is 016_&thread_logo_cropped.png. The target audience is Budget-conscious shoppers. The primary purpose is Inspire them to shop now and save money with the up to 30% off offer."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Leaderboard (728x90) Section -->
+    <div class="banner-section">
+      <h3 class="section-heading has-text-centered">Generated Leaderboard Banners (728x90)</h3>
+      <p class="section-description has-text-centered">Typically placed at the top or bottom of web pages</p>
+      
+      <div id="leaderboard-carousel" class="carousel banner-carousel">
+        <!-- First Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item leaderboard">
+              <img src="./static/teasers/leaderboard/skincare_luxury_banner.png" alt="lumina">
+              <div class="banner-caption">
+                "Design a banner ad image of size 728x90 for a weekend sale advertisement for skincare products with a focus on promoting the cosmetic serum. All items are discounted up to 30% for this season. The logo path is 020_lumina_logo_cropped.png. The target audience is Skincare enthusiasts. The primary purpose is Inform them about the weekend sale and the 30% discount on all items."
+              </div>
+            </div>
+            <div class="banner-item leaderboard">
+              <img src="./static/teasers/leaderboard/cat_festival_banner.png" alt="cat festival">
+              <div class="banner-caption">
+                "Create a banner ad image of size 728x90 for SVW Group's International Cat Day Festival at Reeves Hall. Encourage people to attend the festival by highlighting the chance to find a pet friend and offering lectures on pet protection and cat grooming workshops. Date and location information: Aug 8, 2018, London, Reeves Hall. The logo path is 003_svwgroup_logo_cropped.png. The target audience is Families with children. The primary purpose is Motivate them to participate in the festival for a fun and educational experience."
+              </div>
+            </div>  
+          </div>
+        </div>
+        
+        <!-- Second Slide -->
+        <div class="item">
+          <div class="banner-slide">
+            <div class="banner-item leaderboard">
+              <img src="./static/teasers/leaderboard/18_3.svg" alt="feast and friends">
+              <div class="banner-caption">
+                "Design a banner ad image of size 728x90 to promote a lunch event featuring delicious food, including fruit cake and strawberries. Encourage people to accept the invitation and join for a leisurely lunch with friends. The logo path is 018_feast&friends_logo_cropped.png. The target audience is Social groups and clubs. The primary purpose is Encourage their members to attend the lunch event."
+              </div>
+            </div>
+            <div class="banner-item leaderboard">
+              <img src="./static/teasers/leaderboard/89_1-0.svg" alt="harvest and co">
+              <div class="banner-caption">
+                "Create a banner ad image of size 728x90 for a fast casual restaurant highlighting the delicious and tasty food. The ad should convey the message of unrivaled quality in every bite. The website for the restaurant is www.harvestco.com. The logo path is 089_harvest&co_logo_cropped.png. The target audience is Young professionals. The primary purpose is Encourage them to visit the restaurant for a quick and delicious meal during lunch breaks.."
+              </div>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Wide Skyscraper (160x600) Section -->
+    <div class="banner-section">
+      <h3 class="section-heading has-text-centered">Generated Wide Skyscraper Banners (160x600)</h3>
+      <p class="section-description has-text-centered">Vertically oriented banners for sidebars and margins</p>
+      
+      <div id="skyscraper-carousel" class="carousel banner-carousel">
+        <!-- First Slide -->
+        <div class="item">
+          <div class="banner-slide-skyscraper">
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/cat_festival_banner.png" alt="svw">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 for SVW Group's International Cat Day Festival at Reeves Hall. Encourage people to attend the festival by highlighting the chance to find a pet friend and offering lectures on pet protection and cat grooming workshops. Date and location information: Aug 8, 2018, London, Reeves Hall. The logo path is 003_svwgroup_logo_cropped.png. The target audience is Families with children. The primary purpose is Motivate them to participate in the festival for a fun and educational experience."
+              </div>
+            </div>
+            
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/modern_sophisticated_banner.png" alt="meridian">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 for a Black Friday sale event that highlights the discount offerings of up to 50% off on select items. The ad directs customers to visit www.meridian.com for more information. The store name is MERIDIAN. The logo path is 033_meridian_logo_cropped.png. The target audience is Frequent online shoppers. The primary purpose is Drive traffic to the website to increase online sales."
+              </div>
+            </div>
+            
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/sports_bar_background.png" alt="inblast">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 to promote a Super Bowl food offer at INBLAST bar, offering beer and hot dogs for $10. Show that it's the best place to watch the game in town. The logo path is 010_inblast_logo_cropped.png. The target audience is Sports enthusiasts. The primary purpose is Encourage them to visit INBLAST bar to enjoy the Super Bowl food offer."
+              </div>
+            </div>
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/valentines_bakery_banner.png" alt="sweet whisks">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 for a bakery or confectionery shop to promote a special offer on cupcakes for Valentine's Day. The offer is 'Buy 1, Get 1 Free'. The logo path is 081_sweetwhisks_logo_cropped.png. The target audience is Individuals planning to celebrate Valentine's Day. The primary purpose is Motivate them to purchase cupcakes for their loved ones."
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Second Slide -->
+        <div class="item">
+          <div class="banner-slide-skyscraper">
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/35_3-0.svg" alt="aura">
+              <div class="banner-caption">
+                "Design a banner ad image of size 160x600 for a tanning salon that highlights their offer of 30% off any tanning package for first-time clients. The ad includes the salon's name AURA and website www.aura.com. The logo path is 035_aura_logo_cropped.png. The target audience is Fitness enthusiasts and bodybuilders. The primary purpose is Attract them to enhance their appearance with a tan and promote the salon's packages."
+              </div>
+            </div>
+            
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/32_2-0.svg" alt="techpulse">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 for a Black Friday and Cyber Monday sale with a bold and attention-grabbing design. The sale offers a 50% discount and the address of the store is 41 Universe st., Great City. The website for the store is www.techpulse.com. The logo path is 032_techpulse_logo_cropped.png. The target audience is Bargain hunters. The primary purpose is Visit the physical store to take advantage of the discount."
+              </div>
+            </div>
+            
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/24_1-0.svg" alt="duotrek">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 to promote camping equipment for adventurous couples who enjoy spending time in nature and camping. Encourage them to order now. The logo path is 024_duotrek_logo_cropped.png. The target audience is Adventurous couples. The primary purpose is Order camping equipment now."
+              </div>
+            </div>
+
+            <div class="banner-item skyscraper">
+              <img src="./static/teasers/skyscraper/49_4-0.svg" alt="prime genetics">
+              <div class="banner-caption">
+                "Create a banner ad image of size 160x600 for breeding and selection services for cattle farms. Promote the offer of buying 5 and getting 1 calf free. Encourage customers to build their herd with us. The logo path is 049_primegenetics_logo_cropped.png. The target audience is Livestock investors. The primary purpose is Persuade them to invest in the breeding services to expand their cattle business."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      <!-- <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-image1">
+          <img src="./static/images/t1.png" id="image1" alt="Image 1" height="100%">
+        </div>
+        <div class="item item-image2">
+          <img src="./static/images/t2.png" id="image2" alt="Image 2" height="100%">
+        </div>
+        
+      </div> -->
+    </div>
+  </div>
+</section>
+
+<!-- <section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Nerfies</span> turns selfie videos from your phone into
+        free-viewpoint
+        portraits.
+      </h2>
+    </div>
+  </div>
+</section> -->
+
+<!-- teaser section in progress -->
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+    <div>
+      <section class="section" style="overflow:hidden;">
+        <div class="container">
+          <div id="post_images" class="carousel">
+            <div id="sliderb14c0d08-309c-4169-96e0-465ac729d600" class="slider" tabindex="0">
+              <style>
+                .row {
+                  display: flex;
+                  justify-content: space-between;
+                }
+
+                .column {
+                  flex: 25%;
+                  padding: 5px;
+                }
+                img {
+                  max-width: 100%;
+                }
+              </style>
+              <div class="row">
+                <div class="column">
+                  <div class="image_container">
+                    <img src="./static_lr/img/teaser/Stage2_320_pred_v2.jpg" alt="Image 1">
+                    <div class="caption">
+                      <div>Design a recruiting post for a graphic designer job opening. Encourage interested candidates to send their CV to
+                        yourname@email.com</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <div class="image_container">
+                    <img src="./static_lr/img/teaser/Stage2_320_pred_v2.jpg" alt="Image 1">
+                    <div class="caption">
+                      <div>Design a recruiting post for a graphic designer job opening. Encourage interested candidates to send their CV to
+                        yourname@email.com</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slider-item" data-slider-index="1">
+              <div class="row">
+                <div class="column">
+                  <div class="image_container">
+                    <img src="./static/img_eccv/joe_c.png"
+
+                         class="interpolation-image"
+                         alt="Interpolate start reference image."/>
+                    <div class="caption">
+                      <div>Design an animated digital poster for a fantasy concert where Joe Hisaishi performs on a grand piano on a moonlit
+                        beach. The scene should be magical, with bioluminescent waves and a starry sky. The poster should invite viewers to
+                        an exclusive virtual event.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slider-item" data-slider-index="2">
+              <div class="row">
+                <div class="column">
+                  <div class="image_container">
+                    <img src="./static/img_eccv/joe_c.png"
+
+                         class="interpolation-image"
+                         alt="Interpolate start reference image."/>
+                    <div class="caption">
+                      <div>Design an animated digital poster for a fantasy concert where Joe Hisaishi performs on a grand piano on a moonlit
+                        beach. The scene should be magical, with bioluminescent waves and a starry sky. The poster should invite viewers to
+                        an exclusive virtual event.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script src="https://cdn.jsdelivr.net/npm/bulma-carousel@4.0.3/dist/js/bulma-carousel.min.js"></script>
+      <script>
+        bulmaCarousel.attach('#post_images', {
+          slidesToScroll: 1,
+          slidesToShow: 1,
+          initialSlide:1,
+          loop: true,
+        });
+      </script>
+    </div>
+  </div>
+</section> -->
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Advertising banners are critical for capturing user attention and enhancing advertising campaign effectiveness. Creating aesthetically pleasing banner designs while conveying the campaign messages is challenging due to the large search space involving multiple design elements. Additionally, advertisers need multiple sizes for different displays and various versions to target different sectors of audiences. Since design is intrinsically an iterative and subjective process, flexible editability is also in high demand for practical usage.
+          </p>
+          <p>
+            While current models have served as assistants to human designers in various design tasks, they typically handle only segments of the creative design process or produce pixel-based outputs that limit editability. 
+          </p>
+          <p>
+            This paper introduces a training-free framework for fully automated banner ad design creation, enabling frontier multimodal large language models (MLLMs) to streamline the production of effective banners with minimal manual effort across diverse marketing contexts. We present BannerAgency, an MLLM agent system that collaborates with advertisers to understand their brand identity and banner objectives, generates matching background images, creates blueprints for foreground design elements, and renders the final creatives as editable components in Figma or SVG formats rather than static pixels. 
+          </p>
+          <p>
+            To facilitate evaluation and future research, we introduce BannerRequest400, a benchmark featuring 100 unique logos paired with 400 diverse banner requests. Through quantitative and qualitative evaluations, we demonstrate the framework's effectiveness, emphasizing the quality of the generated banner designs, their adaptability to various banner requests, and their strong editability enabled by this component-based approach. 
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+    <!-- method -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3" id="method">Method</h2>
+        <div class="column is-full-width">
+          <img src="./static/images/method.png" 
+                   class="interpolation-image"
+                   alt="Interpolate start reference image."/><br><br>
+                   
+          <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+            <div class="content has-text-justified">
+            <p>
+              Given a logo and request, BannerAgency begins with the <i>Strategist</i> analyzing banner objectives, followed by the <i>Background Designer</i> creating matching backgrounds, then the <i>Foreground Designer</i> producing element blueprints, and concludes with the <i>Developer</i> rendering the final design as editable components. With access to external knowledge, tool-calling capabilities, and shared memory, BannerAgency enables context-aware, harmonized decisions and supports multiple banner sizes if requested.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+    <!-- editability -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3" id="method">Editability</h2>
+        <div class="column is-full-width">
+          <img src="./static/images/editability.png" 
+                   class="interpolation-image"
+                   alt="Interpolate start reference image."/><br><br>
+                   
+          <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+            <div class="content has-text-justified">
+            <p>
+              BannerAgency supports direct editability in Figma ecosystem, enabling users to modify the generated designs with ease. The system generates the final designs as editable components in Figma or SVG formats, allowing users to adjust the designs to their preferences, such as changing the text, colors, or layout. This component-based approach enhances the flexibility and usability of the generated banners, enabling advertisers to tailor the designs to their specific needs and preferences.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
+    </div>
+
+  <!-- Cross-Genre Aesthetic Adaptation -->
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-four-fifths">
+      <h2 class="title is-3" id="method">Different Aesthetic Styles</h2>
+      <div class="column is-full-width">
+        <img src="./static/images/styles.png" 
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/><br><br>
+                 
+        <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+          <p>
+            BannerAgency is capable of generating banners in various aesthetic styles to cater to different marketing contexts and target audiences. By leveraging multimodal large language models, BannerAgency can adapt to different aesthetic styles to create banners that resonate with the brand identity and message of the advertiser. This cross-genre aesthetic adaptation enables BannerAgency to produce diverse and visually appealing banner designs that effectively communicate the advertising message to the target audience.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+
+
+  <!-- Cross-Cultural Linguistic Adaptation -->
+  <div class="columns is-centered has-text-centered">
+    <div class="column is-four-fifths">
+      <h2 class="title is-3" id="method">Different Languages</h2>
+      <div class="column is-full-width">
+        <img src="./static/images/languages.png" 
+                 class="interpolation-image"
+                 alt="Interpolate start reference image."/><br><br>
+                 
+        <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+          <p>
+            BannerAgency is capable of generating banners in multiple languages to cater to diverse audiences across different regions and markets. By leveraging the multilingual capabilities of multimodal large language models, BannerAgency can adapt the text content of the banners to different languages while maintaining the overall design and layout. This cross-cultural linguistic adaptation enables BannerAgency to create banners that effectively communicate the advertising message to audiences in different linguistic backgrounds.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div>
+  </div>
+  
+  </div>
+</section>
+
+
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{wang2025banneragency,
+  author    = {Wang, Heng and Shimose, Yotaro and Takamatsu, Shingo},
+  title     = {BannerAgency: Advertising Banner Design with Multimodal LLM Agents},
+  journal   = {arXiv preprint arXiv:2503.11060},
+  year      = {2025},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/todo.pdf">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/todo" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+            <br>
+            Source code is mainly borrowed from <a
+            href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> website.
+            <footer class="text-center">
+              &#169; Heng Wang<br />
+              Last Update: 2025-03-12
+            </footer>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
