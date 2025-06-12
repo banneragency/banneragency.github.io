@@ -1,6 +1,6 @@
 # BannerAgency
 
-This is the repository that contains source code for the [BannerAgency website](https://banneragency.github.io)
+This is the repository that contains source code for the [BannerAgency website](https://banneragency.github.io).
 
 If you find BannerAgency useful for your work please cite:
 ```
